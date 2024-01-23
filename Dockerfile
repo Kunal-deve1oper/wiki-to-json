@@ -1,19 +1,18 @@
 # Development stage
 FROM ghcr.io/puppeteer/puppeteer:21.5.2 as development
 
-# Create a non-root user
-RUN useradd -m -s /bin/bash myuser
+USER root
 
 WORKDIR /app
 
 # Copy only package.json and package-lock.json to leverage Docker cache
 COPY package*.json ./
 
-# Switch to the non-root user
-USER myuser
-
-# Install npm globally
+# Install npm globally as root
 RUN npm install -g npm@10.3.0
+
+# Switch back to the default non-root user
+USER pptruser
 
 # Install dependencies
 RUN npm install
@@ -38,10 +37,10 @@ WORKDIR /app
 # Copy only package.json and package-lock.json to leverage Docker cache
 COPY package*.json ./
 
-# Switch to the non-root user
-USER myuser
+# Switch to the default non-root user
+USER pptruser
 
-# Install npm globally
+# Install npm globally as pptruser
 RUN npm install -g npm@10.3.0
 
 # Install production dependencies only
