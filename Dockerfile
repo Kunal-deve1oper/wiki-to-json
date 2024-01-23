@@ -11,8 +11,8 @@ RUN npm ci
 
 RUN mkdir -p /app/files
 
-COPY dist/ ./dist/
+COPY ./dist/ ./dist/
 
 EXPOSE 5000
 
-CMD ["node", "dist/server.js"]
+CMD ["node", "./dist/server.js"]
