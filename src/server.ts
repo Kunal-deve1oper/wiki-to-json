@@ -16,6 +16,7 @@ app.get("/wiki", async (req: Request, res: Response, next: NextFunction) => {
   let filename: string = new Date().getTime().toString();
   let url = req.query.q as string;
   let status = await scrapper(url, filename);
+  console.log(status);
   if (status === "Success") {
     let filePath = path.join(__dirname, `../files/${filename}.json`);
     res.setHeader("content-type", "application/json");

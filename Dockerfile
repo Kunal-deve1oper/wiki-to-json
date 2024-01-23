@@ -1,13 +1,19 @@
-FROM node:20-alpine AS build
+FROM ghcr.io/puppeteer/puppeteer:21.5.2
 
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+
+USER node
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm ci --only=production
 
-COPY ./dist .
+RUN mkdir -p /app/files && chown -R node:node /app
+
+COPY dist/ ./dist/
 
 EXPOSE 5000
 
-CMD [ "node","server.js" ]
+CMD ["node", "dist/server.js"]

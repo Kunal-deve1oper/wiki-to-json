@@ -4,7 +4,19 @@ import path from "path";
 import { fixData } from "./organizeData";
 
 export const scrapper = async (url: string, name: string): Promise<string> => {
-  const browser: Browser = await puppeteer.launch({ headless: "new" });
+  const browser: Browser = await puppeteer.launch({
+    headless: "new",
+    args: [
+      "--disable-setuid-sandbox",
+      "--no-sandbox",
+      "--single-process",
+      "--no-zygote",
+    ],
+    executablePath:
+      process.env.NODE_ENV === "production"
+        ? process.env.PUPPETEER_EXECUTABLE_PATH
+        : puppeteer.executablePath(),
+  });
   const page: Page = await browser.newPage();
 
   try {
@@ -39,11 +51,19 @@ export const scrapper = async (url: string, name: string): Promise<string> => {
       return data;
     });
 
+    console.log("scrapper 1");
+
     let result = fixData(data);
 
+    console.log("scrapper 2");
+
     if (!fs.existsSync(path.join(__dirname, "../files"))) {
+      console.log("scrapper 3");
       fs.mkdirSync(path.join(__dirname, "../files"), { recursive: true });
+      console.log("scrapper 4");
     }
+
+    console.log("scrapper 5");
 
     fs.writeFile(
       path.join(__dirname, `../files/${name}.json`),
@@ -52,6 +72,7 @@ export const scrapper = async (url: string, name: string): Promise<string> => {
         if (err) console.log(err);
       }
     );
+    console.log("scrapper 6");
   } catch (error) {
     return "Error";
   } finally {

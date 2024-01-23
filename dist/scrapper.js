@@ -18,7 +18,18 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const organizeData_1 = require("./organizeData");
 const scrapper = (url, name) => __awaiter(void 0, void 0, void 0, function* () {
-    const browser = yield puppeteer_1.default.launch({ headless: "new" });
+    const browser = yield puppeteer_1.default.launch({
+        headless: "new",
+        args: [
+            "--disable-setuid-sandbox",
+            "--no-sandbox",
+            "--single-process",
+            "--no-zygote",
+        ],
+        executablePath: process.env.NODE_ENV === "production"
+            ? process.env.PUPPETEER_EXECUTABLE_PATH
+            : puppeteer_1.default.executablePath(),
+    });
     const page = yield browser.newPage();
     try {
         yield page.goto(url);
@@ -43,14 +54,20 @@ const scrapper = (url, name) => __awaiter(void 0, void 0, void 0, function* () {
             });
             return data;
         });
+        console.log("scrapper 1");
         let result = (0, organizeData_1.fixData)(data);
+        console.log("scrapper 2");
         if (!fs_1.default.existsSync(path_1.default.join(__dirname, "../files"))) {
+            console.log("scrapper 3");
             fs_1.default.mkdirSync(path_1.default.join(__dirname, "../files"), { recursive: true });
+            console.log("scrapper 4");
         }
+        console.log("scrapper 5");
         fs_1.default.writeFile(path_1.default.join(__dirname, `../files/${name}.json`), JSON.stringify(result), (err) => {
             if (err)
                 console.log(err);
         });
+        console.log("scrapper 6");
     }
     catch (error) {
         return "Error";
