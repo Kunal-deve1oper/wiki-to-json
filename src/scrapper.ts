@@ -50,19 +50,14 @@ export const scrapper = async (url: string, name: string): Promise<string> => {
       return data;
     });
 
-    console.log("scrapper 1");
 
     let result = fixData(data);
 
-    console.log("scrapper 2");
 
     if (!fs.existsSync(path.join(__dirname, "../files"))) {
-      console.log("scrapper 3");
       fs.mkdirSync(path.join(__dirname, "../files"), { recursive: true });
-      console.log("scrapper 4");
     }
 
-    console.log("scrapper 5");
 
     fs.writeFile(
       path.join(__dirname, `../files/${name}.json`),
@@ -71,7 +66,6 @@ export const scrapper = async (url: string, name: string): Promise<string> => {
         if (err) console.log(err);
       }
     );
-    console.log("scrapper 6");
   } catch (error) {
     return "Error";
   } finally {
