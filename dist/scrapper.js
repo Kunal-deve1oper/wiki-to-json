@@ -23,7 +23,6 @@ const scrapper = (url, name) => __awaiter(void 0, void 0, void 0, function* () {
         args: [
             "--disable-setuid-sandbox",
             "--no-sandbox",
-            "--single-process",
             "--no-zygote",
         ],
         executablePath: process.env.NODE_ENV === "production"
