@@ -20,11 +20,7 @@ const organizeData_1 = require("./organizeData");
 const scrapper = (url, name) => __awaiter(void 0, void 0, void 0, function* () {
     const browser = yield puppeteer_1.default.launch({
         headless: "new",
-        args: [
-            "--disable-setuid-sandbox",
-            "--no-sandbox",
-            "--no-zygote",
-        ],
+        args: ["--disable-setuid-sandbox", "--no-sandbox", "--no-zygote"],
         executablePath: process.env.NODE_ENV === "production"
             ? process.env.PUPPETEER_EXECUTABLE_PATH
             : puppeteer_1.default.executablePath(),
@@ -33,9 +29,10 @@ const scrapper = (url, name) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield page.goto(url);
         const data = yield page.evaluate(() => {
+            var _a;
             const iterableObject = document.querySelectorAll("#mw-content-text > div.mw-content-ltr.mw-parser-output > *");
             let data = [{}];
-            let currHeading = null;
+            let currHeading = (_a = document.querySelector("#firstHeading")) === null || _a === void 0 ? void 0 : _a.textContent;
             iterableObject.forEach((element) => {
                 var _a;
                 if (element.tagName === "H2" ||

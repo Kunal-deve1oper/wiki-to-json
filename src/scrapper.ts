@@ -6,11 +6,7 @@ import { fixData } from "./organizeData";
 export const scrapper = async (url: string, name: string): Promise<string> => {
   const browser: Browser = await puppeteer.launch({
     headless: "new",
-    args: [
-      "--disable-setuid-sandbox",
-      "--no-sandbox",
-      "--no-zygote",
-    ],
+    args: ["--disable-setuid-sandbox", "--no-sandbox", "--no-zygote"],
     executablePath:
       process.env.NODE_ENV === "production"
         ? process.env.PUPPETEER_EXECUTABLE_PATH
@@ -27,7 +23,8 @@ export const scrapper = async (url: string, name: string): Promise<string> => {
       );
 
       let data = [{}] as [{ text: string; heading: string }];
-      let currHeading: string | null | undefined = null;
+      let currHeading: string | null | undefined =
+        document.querySelector("#firstHeading")?.textContent;
 
       iterableObject.forEach((element) => {
         if (
@@ -50,14 +47,11 @@ export const scrapper = async (url: string, name: string): Promise<string> => {
       return data;
     });
 
-
     let result = fixData(data);
-
 
     if (!fs.existsSync(path.join(__dirname, "../files"))) {
       fs.mkdirSync(path.join(__dirname, "../files"), { recursive: true });
     }
-
 
     fs.writeFile(
       path.join(__dirname, `../files/${name}.json`),
