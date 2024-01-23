@@ -1,10 +1,14 @@
-FROM ghcr.io/puppeteer/puppeteer:21.7.0 as build
+FROM ghcr.io/puppeteer/puppeteer:21.7.0
 
-WORKDIR /app
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable \
+    NODE_ENV=production
+
+WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm ci --only=production
 
 COPY ./dist ./dist
 
