@@ -2,7 +2,7 @@
 FROM ghcr.io/puppeteer/puppeteer:21.5.2 as development
 
 # Create a non-root user
-RUN adduser --disabled-password myuser
+RUN useradd -m -s /bin/bash myuser
 
 WORKDIR /app
 
