@@ -1,53 +1,14 @@
-# Development stage
-FROM ghcr.io/puppeteer/puppeteer:21.7.0 as development
+FROM ghcr.io/puppeteer/puppeteer:21.7.0 as build
 
-USER root
-
-WORKDIR /app
-
-# Copy only package.json and package-lock.json to leverage Docker cache
-COPY package*.json ./
-
-# Install npm globally as root
-RUN npm install -g npm@10.3.0
-
-# Switch back to the default non-root user
-USER pptruser
-
-# Install dependencies
-RUN npm install
-
-# Copy the entire application code
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Production stage
-FROM ghcr.io/puppeteer/puppeteer:21.5.2 as production
-
-# Set environment variables
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
 WORKDIR /app
 
-# Copy only package.json and package-lock.json to leverage Docker cache
 COPY package*.json ./
 
-# Switch to the default non-root user
-USER pptruser
+RUN npm install --omit=dev
 
-# Install npm globally as pptruser
-RUN npm install -g npm@10.3.0
-
-# Install production dependencies only
-RUN npm install --production
-
-# Copy the compiled code from the development stage
-COPY --from=development /app/dist ./dist
-
+COPY ./dist ./dist
 # Specify the command to run your application
 CMD ["node", "dist/server.js"]
