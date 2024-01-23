@@ -9,7 +9,6 @@ export const scrapper = async (url: string, name: string): Promise<string> => {
     args: [
       "--disable-setuid-sandbox",
       "--no-sandbox",
-      "--single-process",
       "--no-zygote",
     ],
     executablePath:
