@@ -1,6 +1,6 @@
 FROM ghcr.io/puppeteer/puppeteer:21.5.2 as development
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json .
 
@@ -17,12 +17,12 @@ ENV NODE_ENV=${NODE_ENV}
 # ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 #     PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json .
 
 RUN npm ci --omit=dev
 
-COPY --from=development /usr/src/app/dist ./dist
+COPY --from=development /app/dist ./dist
 
 CMD ["node", "dist/server.js"]
