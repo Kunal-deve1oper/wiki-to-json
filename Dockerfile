@@ -1,5 +1,5 @@
 # Development stage
-FROM ghcr.io/puppeteer/puppeteer:21.5.2 as development
+FROM ghcr.io/puppeteer/puppeteer:21.7.0 as development
 
 USER root
 
